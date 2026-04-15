@@ -1244,14 +1244,18 @@ function updWeekDashboard(){
   const dayKeys=['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'];
   const dayColors2={lundi:'#e24b4a',mardi:'#639922',mercredi:'#378add',jeudi:'#ba7517',vendredi:'#7f77dd',samedi:'#888780',dimanche:'#444441'};
   const dayShort={lundi:'Lun',mardi:'Mar',mercredi:'Mer',jeudi:'Jeu',vendredi:'Ven',samedi:'Sam',dimanche:'Dim'};
+  const jsToKey=['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+  const todayDk=jsToKey[now.getDay()];
   const sessThisWeek=ST.sessions.filter(s=>s.week===weekKey);
   const doneDays=new Set(sessThisWeek.map(s=>s.day));
   const dDiv=document.getElementById('wkd-days');
   if(dDiv)dDiv.innerHTML=dayKeys.map(dk=>{
     const done=doneDays.has(dk);
-    const col=done?dayColors2[dk]:'#e8e8e0';
-    const tc=done?'#fff':'#b0b0a8';
-    return `<span class="wk-day-pill" style="background:${col};color:${tc}">${done?'✓ ':''} ${dayShort[dk]}</span>`;
+    const isToday=dk===todayDk;
+    const col=done?dayColors2[dk]:isToday?'#1a1a18':'#e8e8e0';
+    const tc=done?'#fff':isToday?'#fff':'#b0b0a8';
+    const border=isToday&&!done?'outline:2px solid #1a1a18;outline-offset:2px;':'';
+    return `<span class="wk-day-pill" style="background:${col};color:${tc};${border}">${done?'✓ ':isToday?'● ':''} ${dayShort[dk]}</span>`;
   }).join('');
   const weekH=ST.history.filter(h=>h.week===weekKey);
   const totalVol=weekH.reduce((a,h)=>a+h.totalVol,0);
